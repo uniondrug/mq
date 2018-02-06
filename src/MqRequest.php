@@ -5,6 +5,7 @@
  */
 namespace UniondrugMq;
 
+use Phalcon\Di\Injectable;
 use UniondrugMq\Bases\Abstracts\AbstractMessage;
 
 /**
@@ -21,23 +22,26 @@ use UniondrugMq\Bases\Abstracts\AbstractMessage;
  * @property int       $errno 错误编号
  * @property string    $error 错误原因
  * @property string    $uuid 系统UUID
+ * @property string    $contents 消息原文
  * @property string    $messageId 消息ID
  * @property string    $filterTag 来自Tag
  * @property string    $topicName 来自Topic
  * @property \stdClass $payload 消息原文
  * @package UniondrugMq
  */
-class MqRequest
+class MqRequest extends Injectable
 {
     private $results = [
         'errno' => 0,
         'error' => '',
         'uuid' => '',
+        'contents' => '',
         'messageId' => '',
         'filterTag' => '',
         'topicName' => '',
         'payload' => null
     ];
+    private static $requestLoggerPath = 'mqr';
 
     public function __construct()
     {
@@ -77,11 +81,30 @@ class MqRequest
         $request = new MqRequest();
         // 1. 基础验证
         if (!static::initMethod($request) || !static::initVerify($request)) {
+            static::afterInited($request);
             return $request;
         }
         // 2. 正文处理
         static::initMessage($request);
+        static::afterInited($request);
         return $request;
+    }
+
+    /**
+     * 初始化完成之后
+     *
+     * @param MqRequest $request
+     */
+    private static function afterInited(MqRequest $request)
+    {
+        // 1. 无MessageId
+        if ($request->messageId === '') {
+            return;
+        }
+        // 2. 写日志
+        $message = '收到【'.$request->uuid.'】号消息, 从【'.$request->topicName.'://'.$request->filterTag.'】主题 - ';
+        $message .= '内容为【'.$request->contents.'】';
+        $request->getDI()->getLogger(static::$requestLoggerPath)->info($message);
     }
 
     /**
@@ -103,6 +126,7 @@ class MqRequest
             }
         }
         if (isset($messages['Message'])) {
+            $request->set('contents', $messages['Message']);
             $payload = json_decode($messages['Message'], false);
             if ($payload instanceof \stdClass) {
                 $request->set('payload', $payload);

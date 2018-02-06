@@ -17,7 +17,7 @@ class PromotionMq extends AbstractMq
     const TAG_AFTER_CREATE = 'afterCreate';
     const TAG_AFTER_LOCK = 'afterLock';
     const TAG_AFTER_UNLOCK = 'afterUnlock';
-    const TOPIC_NAME = 'order';
+    const TOPIC_NAME = 'orders';
 
     /**
      * 优惠券消费后触发

@@ -13,4 +13,5 @@ use UniondrugMq\Publishes\Abstracts\AbstractMq;
  */
 class RightsMq extends AbstractMq
 {
+    const TOPIC_NAME = 'orders';
 }

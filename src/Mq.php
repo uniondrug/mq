@@ -9,6 +9,7 @@ use UniondrugMq\Publishes\PromotionMq;
 use UniondrugMq\Publishes\Abstracts\AbstractMq;
 use UniondrugMq\Publishes\OrderMq;
 use UniondrugMq\Publishes\RightsMq;
+use UniondrugMq\Publishes\TestMq;
 
 /**
  * 消息队列入口
@@ -44,8 +45,8 @@ class Mq
          */
         try {
             $class = "\\UniondrugMq\\Publishes\\{$name}";
-            $instance =  new $class();
-            if ($instance instanceof AbstractMq){
+            $instance = new $class();
+            if ($instance instanceof AbstractMq) {
                 self::$instances[$name] = $instance;
                 return $instance;
             }

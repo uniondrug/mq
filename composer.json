@@ -16,7 +16,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Pails\\": "src/"
+      "UniondrugMq\\": "src/"
     }
   },
   "suggests": {

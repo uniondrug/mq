@@ -13,10 +13,10 @@ use UniondrugMq\Publishes\Abstracts\AbstractMq;
  */
 class PromotionMq extends AbstractMq
 {
-    const TAG_AFTER_CONSUMED = 'afterConsumed';
-    const TAG_AFTER_CREATE = 'afterCreate';
-    const TAG_AFTER_LOCK = 'afterLock';
-    const TAG_AFTER_UNLOCK = 'afterUnlock';
+    const TAG_AFTER_CONSUMED = 'promoteConsumed';   // 优惠券完成消费
+    const TAG_AFTER_CREATED = 'promoteCreated';     // 优惠券创建完成
+    const TAG_AFTER_LOCKED = 'promoteLocked';       // 优惠券已被锁定
+    const TAG_AFTER_UNLOCK = 'promoteUnlock';       // 优惠券解除锁定
     const TOPIC_NAME = 'orders';
 
     /**
@@ -26,7 +26,7 @@ class PromotionMq extends AbstractMq
      *
      * @return \UniondrugMq\Bases\Response
      */
-    public function afterConsumed(\stdClass $data)
+    public function afterConsumed($data)
     {
         return $this->publish($data, static::TOPIC_NAME, static::TAG_AFTER_CONSUMED);
     }
@@ -38,9 +38,9 @@ class PromotionMq extends AbstractMq
      *
      * @return \UniondrugMq\Bases\Response
      */
-    public function afterCreate(\stdClass $data)
+    public function afterCreated($data)
     {
-        return $this->publish($data, static::TOPIC_NAME, static::TAG_AFTER_CREATE);
+        return $this->publish($data, static::TOPIC_NAME, static::TAG_AFTER_CREATED);
     }
 
     /**
@@ -50,9 +50,9 @@ class PromotionMq extends AbstractMq
      *
      * @return \UniondrugMq\Bases\Response
      */
-    public function afterLock($data)
+    public function afterLocked($data)
     {
-        return $this->publish($data, static::TOPIC_NAME, static::TAG_AFTER_LOCK);
+        return $this->publish($data, static::TOPIC_NAME, static::TAG_AFTER_LOCKED);
     }
 
     /**
